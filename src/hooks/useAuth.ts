@@ -23,8 +23,21 @@ export function useAuth() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // When user changes, show loading state briefly to prevent data flash
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
+        setLoading(true);
+      }
+
       setUser(session?.user ?? null);
-      setLoading(false);
+
+      // Small delay to ensure state is cleared before showing new user data
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
+        setTimeout(() => {
+          setLoading(false);
+        }, 100);
+      } else {
+        setLoading(false);
+      }
     });
 
     return () => subscription.unsubscribe();

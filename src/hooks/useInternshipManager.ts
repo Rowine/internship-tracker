@@ -6,8 +6,10 @@ import {
   updateInternship,
   deleteInternship,
 } from "@/lib/supabase-api";
+import { useAuth } from "./useAuth";
 
 export function useInternshipManager() {
+  const { user } = useAuth();
   const [internships, setInternships] = useState<InternshipData[]>([]);
   const [selectedInternship, setSelectedInternship] =
     useState<InternshipData | null>(null);
@@ -31,9 +33,39 @@ export function useInternshipManager() {
       endDate: "",
     });
 
+  // Clear all state when user changes
+  const clearState = () => {
+    setInternships([]);
+    setSelectedInternship(null);
+    setIsEditing(false);
+    setIsCreatingNew(false);
+    setError(null);
+    setEditForm({
+      company: "",
+      position: "",
+      totalHours: 0,
+      startDate: "",
+      endDate: "",
+    });
+    setNewInternshipForm({
+      company: "",
+      position: "",
+      totalHours: 0,
+      startDate: "",
+      endDate: "",
+    });
+  };
+
+  // Load internships when user changes
   useEffect(() => {
-    loadInternships();
-  }, []);
+    if (user) {
+      loadInternships();
+    } else {
+      // User logged out - clear all state immediately
+      clearState();
+      setLoading(false);
+    }
+  }, [user]);
 
   const loadInternships = async () => {
     try {

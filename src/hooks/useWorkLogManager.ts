@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { InternshipData, WorkLogForm } from "@/types/internship";
 import { formatDateKey } from "@/lib/utils/date";
 import {
@@ -6,8 +6,10 @@ import {
   deleteWorkLog,
   recalculateCompletedHours,
 } from "@/lib/supabase-api";
+import { useAuth } from "./useAuth";
 
 export function useWorkLogManager() {
+  const { user } = useAuth();
   const [isLoggingWork, setIsLoggingWork] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [workLogForm, setWorkLogForm] = useState<WorkLogForm>({
@@ -15,6 +17,24 @@ export function useWorkLogManager() {
     notes: "",
   });
   const [error, setError] = useState<string | null>(null);
+
+  // Clear all state when user changes
+  const clearState = () => {
+    setIsLoggingWork(false);
+    setSelectedDate(null);
+    setWorkLogForm({
+      hours: 0,
+      notes: "",
+    });
+    setError(null);
+  };
+
+  // Clear state when user changes
+  useEffect(() => {
+    if (!user) {
+      clearState();
+    }
+  }, [user]);
 
   const openWorkLogDialog = (date: Date, internship: InternshipData) => {
     const dateKey = formatDateKey(date);

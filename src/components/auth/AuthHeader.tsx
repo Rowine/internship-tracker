@@ -24,7 +24,7 @@ export function AuthHeader() {
                 {user.email}
               </p>
               <p className="text-xs text-gray-500">
-                Signed in
+                ID: {user.id.slice(0, 8)}...
               </p>
             </div>
           </div>
