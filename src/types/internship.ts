@@ -5,6 +5,7 @@ export interface DailyLog {
 
 export interface InternshipData {
   id: string;
+  user_id?: string;
   company: string;
   position: string;
   totalHours: number;

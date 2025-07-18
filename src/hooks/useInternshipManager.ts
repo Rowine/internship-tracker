@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import type { InternshipData, EditInternshipForm } from "@/types/internship";
-import { generateId } from "@/lib/utils/date";
+import {
+  getInternships,
+  createInternship,
+  updateInternship,
+  deleteInternship,
+} from "@/lib/supabase-api";
 
 export function useInternshipManager() {
   const [internships, setInternships] = useState<InternshipData[]>([]);
@@ -8,6 +13,8 @@ export function useInternshipManager() {
     useState<InternshipData | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<EditInternshipForm>({
     company: "",
     position: "",
@@ -25,13 +32,32 @@ export function useInternshipManager() {
     });
 
   useEffect(() => {
-    // Load internships from localStorage or API
-    // For now, start with empty state
-    setInternships([]);
-    setSelectedInternship(null);
+    loadInternships();
   }, []);
 
-  const updateInternship = (updatedInternship: InternshipData) => {
+  const loadInternships = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getInternships();
+      setInternships(data);
+
+      // Auto-select the first internship if available
+      if (data.length > 0 && !selectedInternship) {
+        setSelectedInternship(data[0]);
+      } else if (data.length === 0) {
+        setSelectedInternship(null);
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to load internships"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateInternshipData = (updatedInternship: InternshipData) => {
     setSelectedInternship(updatedInternship);
     setInternships((prev) =>
       prev.map((internship) =>
@@ -52,14 +78,26 @@ export function useInternshipManager() {
     setIsEditing(true);
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (!selectedInternship) return;
-    const updatedInternship = {
-      ...selectedInternship,
-      ...editForm,
-    };
-    updateInternship(updatedInternship);
-    setIsEditing(false);
+
+    try {
+      setError(null);
+      const updatedInternship = await updateInternship(selectedInternship.id, {
+        company: editForm.company,
+        position: editForm.position,
+        totalHours: editForm.totalHours,
+        startDate: editForm.startDate,
+        endDate: editForm.endDate,
+      });
+
+      updateInternshipData(updatedInternship);
+      setIsEditing(false);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to update internship"
+      );
+    }
   };
 
   const openCreateDialog = () => {
@@ -73,22 +111,26 @@ export function useInternshipManager() {
     setIsCreatingNew(true);
   };
 
-  const saveNew = () => {
-    const newInternship: InternshipData = {
-      id: generateId(),
-      company: newInternshipForm.company,
-      position: newInternshipForm.position,
-      totalHours: newInternshipForm.totalHours,
-      completedHours: 0,
-      startDate: newInternshipForm.startDate,
-      endDate: newInternshipForm.endDate,
-      workDays: new Set(),
-      dailyLogs: {},
-    };
+  const saveNew = async () => {
+    try {
+      setError(null);
+      const newInternship = await createInternship({
+        company: newInternshipForm.company,
+        position: newInternshipForm.position,
+        totalHours: newInternshipForm.totalHours,
+        completedHours: 0,
+        startDate: newInternshipForm.startDate,
+        endDate: newInternshipForm.endDate,
+      });
 
-    setInternships((prev) => [...prev, newInternship]);
-    setSelectedInternship(newInternship);
-    setIsCreatingNew(false);
+      setInternships((prev) => [newInternship, ...prev]);
+      setSelectedInternship(newInternship);
+      setIsCreatingNew(false);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to create internship"
+      );
+    }
   };
 
   const closeEditDialog = () => setIsEditing(false);
@@ -100,11 +142,13 @@ export function useInternshipManager() {
     selectedInternship,
     isEditing,
     isCreatingNew,
+    loading,
+    error,
     editForm,
     newInternshipForm,
 
     // Actions
-    updateInternship,
+    updateInternship: updateInternshipData,
     openEditDialog,
     saveEdit,
     closeEditDialog,
@@ -113,5 +157,6 @@ export function useInternshipManager() {
     closeCreateDialog,
     setEditForm,
     setNewInternshipForm,
+    loadInternships,
   };
 }

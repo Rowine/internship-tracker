@@ -1,6 +1,11 @@
 import { useState } from "react";
 import type { InternshipData, WorkLogForm } from "@/types/internship";
 import { formatDateKey } from "@/lib/utils/date";
+import {
+  updateWorkLog,
+  deleteWorkLog,
+  recalculateCompletedHours,
+} from "@/lib/supabase-api";
 
 export function useWorkLogManager() {
   const [isLoggingWork, setIsLoggingWork] = useState(false);
@@ -9,6 +14,7 @@ export function useWorkLogManager() {
     hours: 0,
     notes: "",
   });
+  const [error, setError] = useState<string | null>(null);
 
   const openWorkLogDialog = (date: Date, internship: InternshipData) => {
     const dateKey = formatDateKey(date);
@@ -20,77 +26,109 @@ export function useWorkLogManager() {
       notes: existingLog?.notes || "",
     });
     setIsLoggingWork(true);
+    setError(null);
   };
 
-  const saveWorkLog = (
+  const saveWorkLog = async (
     internship: InternshipData,
     onUpdate: (updatedInternship: InternshipData) => void
   ) => {
     if (!selectedDate) return;
 
-    const dateKey = formatDateKey(selectedDate);
-    const previousLog = internship.dailyLogs[dateKey];
-    const previousHours = previousLog?.hours || 0;
+    try {
+      setError(null);
+      const dateKey = formatDateKey(selectedDate);
+      const previousLog = internship.dailyLogs[dateKey];
+      const previousHours = previousLog?.hours || 0;
 
-    const updatedDailyLogs = {
-      ...internship.dailyLogs,
-      [dateKey]: {
-        hours: workLogForm.hours,
-        notes: workLogForm.notes,
-      },
-    };
+      // Update or create work log in Supabase
+      await updateWorkLog(
+        internship.id,
+        dateKey,
+        workLogForm.hours,
+        workLogForm.notes
+      );
 
-    const newWorkDays = new Set(internship.workDays);
-    if (workLogForm.hours > 0) {
-      newWorkDays.add(dateKey);
-    } else {
-      newWorkDays.delete(dateKey);
+      // Recalculate completed hours
+      const newCompletedHours = await recalculateCompletedHours(internship.id);
+
+      // Update local state
+      const updatedDailyLogs = {
+        ...internship.dailyLogs,
+        [dateKey]: {
+          hours: workLogForm.hours,
+          notes: workLogForm.notes,
+        },
+      };
+
+      const newWorkDays = new Set(internship.workDays);
+      if (workLogForm.hours > 0) {
+        newWorkDays.add(dateKey);
+      } else {
+        newWorkDays.delete(dateKey);
+        // Remove from daily logs if hours is 0
+        delete updatedDailyLogs[dateKey];
+      }
+
+      const updatedInternship = {
+        ...internship,
+        workDays: newWorkDays,
+        dailyLogs: updatedDailyLogs,
+        completedHours: newCompletedHours,
+      };
+
+      onUpdate(updatedInternship);
+      closeWorkLogDialog();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save work log");
     }
-
-    const newCompletedHours =
-      internship.completedHours - previousHours + workLogForm.hours;
-
-    const updatedInternship = {
-      ...internship,
-      workDays: newWorkDays,
-      dailyLogs: updatedDailyLogs,
-      completedHours: Math.max(0, newCompletedHours),
-    };
-
-    onUpdate(updatedInternship);
-    closeWorkLogDialog();
   };
 
-  const deleteWorkLog = (
+  const deleteWorkLogEntry = async (
     internship: InternshipData,
     onUpdate: (updatedInternship: InternshipData) => void
   ) => {
     if (!selectedDate) return;
 
-    const dateKey = formatDateKey(selectedDate);
-    const previousLog = internship.dailyLogs[dateKey];
-    const previousHours = previousLog?.hours || 0;
+    try {
+      setError(null);
+      const dateKey = formatDateKey(selectedDate);
+      const previousLog = internship.dailyLogs[dateKey];
+      const previousHours = previousLog?.hours || 0;
 
-    const updatedDailyLogs = { ...internship.dailyLogs };
-    delete updatedDailyLogs[dateKey];
+      // Delete work log from Supabase
+      await deleteWorkLog(internship.id, dateKey);
 
-    const newWorkDays = new Set(internship.workDays);
-    newWorkDays.delete(dateKey);
+      // Recalculate completed hours
+      const newCompletedHours = await recalculateCompletedHours(internship.id);
 
-    const updatedInternship = {
-      ...internship,
-      workDays: newWorkDays,
-      dailyLogs: updatedDailyLogs,
-      completedHours: Math.max(0, internship.completedHours - previousHours),
-    };
+      // Update local state
+      const updatedDailyLogs = { ...internship.dailyLogs };
+      delete updatedDailyLogs[dateKey];
 
-    onUpdate(updatedInternship);
-    closeWorkLogDialog();
+      const newWorkDays = new Set(internship.workDays);
+      newWorkDays.delete(dateKey);
+
+      const updatedInternship = {
+        ...internship,
+        workDays: newWorkDays,
+        dailyLogs: updatedDailyLogs,
+        completedHours: newCompletedHours,
+      };
+
+      onUpdate(updatedInternship);
+      closeWorkLogDialog();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to delete work log"
+      );
+    }
   };
 
   const closeWorkLogDialog = () => {
     setIsLoggingWork(false);
     setSelectedDate(null);
+    setError(null);
   };
 
   const hasExistingLog = (internship: InternshipData | null): boolean => {
@@ -104,11 +142,12 @@ export function useWorkLogManager() {
     isLoggingWork,
     selectedDate,
     workLogForm,
+    error,
 
     // Actions
     openWorkLogDialog,
     saveWorkLog,
-    deleteWorkLog,
+    deleteWorkLog: deleteWorkLogEntry,
     closeWorkLogDialog,
     hasExistingLog,
     setWorkLogForm,
