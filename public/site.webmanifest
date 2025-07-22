@@ -1,0 +1,20 @@
+{
+  "name": "InternTrack - Internship Progress & Reporting Made Simple",
+  "short_name": "InternTrack",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#65a85c",
+  "background_color": "#fafafa",
+  "display": "standalone",
+  "description": "Track your internship hours, document your experience, and generate professional reports for your academic advisors and supervisors."
+}
