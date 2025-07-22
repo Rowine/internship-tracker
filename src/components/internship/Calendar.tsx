@@ -85,7 +85,8 @@ export function Calendar({ internship, currentDate, onDateChange, onDayClick }: 
               variant="ghost"
               size="sm"
               onClick={() => navigateMonth("prev")}
-              className="w-9 h-9 p-0 hover:bg-primary/10 hover:text-primary"
+              className="w-11 h-11 p-0 hover:bg-primary/10 hover:text-primary"
+              aria-label="Previous month"
             >
               <ChevronLeft className="w-4 h-4" />
             </Button>
@@ -93,7 +94,8 @@ export function Calendar({ internship, currentDate, onDateChange, onDayClick }: 
               variant="ghost"
               size="sm"
               onClick={() => navigateMonth("next")}
-              className="w-9 h-9 p-0 hover:bg-primary/10 hover:text-primary"
+              className="w-11 h-11 p-0 hover:bg-primary/10 hover:text-primary"
+              aria-label="Next month"
             >
               <ChevronRight className="w-4 h-4" />
             </Button>

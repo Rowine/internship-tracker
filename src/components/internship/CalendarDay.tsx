@@ -21,10 +21,11 @@ export function CalendarDay({ day, internship, onDayClick }: CalendarDayProps) {
     <button
       onClick={() => onDayClick(day)}
       className={`
-        calendar-day h-20 p-3 border-r border-b border-border/30 text-left relative
+        calendar-day min-h-[80px] h-20 p-3 border-r border-b border-border/30 text-left relative focus:outline-none focus:ring-2 focus:ring-primary/50 focus:z-10
         ${isTodayDate ? "calendar-day-today" : ""}
         ${isWorkDay ? "calendar-day-work" : "hover:bg-muted/50"}
       `}
+      aria-label={`${dayLog ? 'Edit' : 'Add'} work log for ${day.toLocaleDateString()}`}
     >
       <div
         className={`text-sm font-semibold mb-1 ${isWorkDay ? "text-foreground" :

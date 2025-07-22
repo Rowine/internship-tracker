@@ -72,7 +72,7 @@ export function AuthPage({ onSuccess }: AuthPageProps) {
 
           <div className="space-y-4 text-center">
             <h1 className="text-3xl font-bold text-foreground">
-              Welcome to <span className="text-primary font-extrabold">InternTrack</span>
+              Welcome to <span className="text-primary font-extrabold" style={{ color: '#4a7c59' }}>InternTrack</span>
             </h1>
             <p className="text-lg text-muted-foreground">
               Document your internship hours and create reports for advisors
@@ -130,7 +130,7 @@ export function AuthPage({ onSuccess }: AuthPageProps) {
               <Rocket className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-foreground">
-              Welcome to <span className="text-primary font-extrabold">InternTrack</span>
+              Welcome to <span className="text-primary font-extrabold" style={{ color: '#4a7c59' }}>InternTrack</span>
             </h2>
           </div>
 
@@ -187,8 +187,9 @@ export function AuthPage({ onSuccess }: AuthPageProps) {
                     <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                     <button
                       type="button"
-                      className="absolute right-3 top-3 h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
+                      className="absolute right-3 top-3 h-8 w-8 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                     >
                       {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
@@ -221,7 +222,7 @@ export function AuthPage({ onSuccess }: AuthPageProps) {
               <Button
                 type="submit"
                 disabled={formLoading || !email || !password}
-                className="w-full gradient-primary hover:shadow-glow transition-all duration-300 transform hover:scale-105 h-12 font-semibold"
+                className="w-full bg-primary hover:bg-primary/90 text-white hover:shadow-glow transition-all duration-300 transform hover:scale-105 h-12 font-semibold min-h-[48px]"
               >
                 {formLoading ? (
                   <div className="flex items-center">
@@ -239,7 +240,8 @@ export function AuthPage({ onSuccess }: AuthPageProps) {
                   <button
                     type="button"
                     onClick={switchMode}
-                    className="ml-2 font-medium text-primary hover:text-primary/80 transition-colors"
+                    className="ml-2 font-medium text-primary hover:text-primary/80 transition-colors min-h-[44px] px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    aria-label={isLogin ? "Switch to sign up form" : "Switch to sign in form"}
                   >
                     {isLogin ? 'Sign up' : 'Sign in'}
                   </button>

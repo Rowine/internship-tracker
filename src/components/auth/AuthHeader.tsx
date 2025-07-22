@@ -39,8 +39,8 @@ export function AuthHeader() {
           <div className="flex items-center space-x-4">
             {/* App Logo/Brand */}
             <div className="flex items-center space-x-3">
-              <div className="gradient-primary w-10 h-10 rounded-xl flex items-center justify-center shadow-glow">
-                <Sparkles className="w-5 h-5 text-primary" />
+              <div className="bg-primary w-10 h-10 rounded-xl flex items-center justify-center shadow-glow">
+                <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-primary">
@@ -57,7 +57,9 @@ export function AuthHeader() {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               variant="ghost"
               size="sm"
-              className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200"
+              className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 min-h-[44px]"
+              aria-label="User account menu"
+              aria-expanded={isDropdownOpen}
             >
               <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center text-primary-foreground font-medium text-xs shadow-glow">
                 {getInitials(user.email)}

@@ -106,7 +106,7 @@ export function InternshipHeader({ internship, onEdit, onExport }: InternshipHea
               <Button
                 onClick={onEdit}
                 size="lg"
-                className="gradient-primary hover:shadow-glow transition-all duration-300 transform hover:scale-105 font-semibold"
+                className="bg-primary hover:bg-primary/90 text-white hover:shadow-glow transition-all duration-300 transform hover:scale-105 font-semibold min-h-[48px]"
               >
                 <Edit3 className="w-5 h-5 mr-2" />
                 Edit Details

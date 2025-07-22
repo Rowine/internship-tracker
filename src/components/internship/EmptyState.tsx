@@ -78,7 +78,7 @@ export function EmptyState({ onCreateNew }: EmptyStateProps) {
           <Button
             onClick={onCreateNew}
             size="lg"
-            className="gradient-primary hover:shadow-glow transition-all duration-300 transform hover:scale-105 text-lg px-8 py-4 h-auto font-semibold"
+            className="bg-primary hover:bg-primary/90 text-white hover:shadow-glow transition-all duration-300 transform hover:scale-105 text-lg px-8 py-4 h-auto font-semibold min-h-[48px]"
           >
             <Plus className="w-6 h-6 mr-3" />
             Create Your Internship Log
