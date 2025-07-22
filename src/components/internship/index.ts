@@ -5,4 +5,5 @@ export { CalendarDay } from "./CalendarDay";
 export { EditInternshipDialog } from "./EditInternshipDialog";
 export { NewInternshipDialog } from "./NewInternshipDialog";
 export { WorkLogDialog } from "./WorkLogDialog";
+export { ExportDialog } from "./ExportDialog";
 export { EmptyState } from "./EmptyState";

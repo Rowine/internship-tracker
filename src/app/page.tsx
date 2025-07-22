@@ -9,11 +9,13 @@ import {
   EditInternshipDialog,
   NewInternshipDialog,
   WorkLogDialog,
+  ExportDialog,
   EmptyState,
 } from "@/components/internship"
 import { AuthPage, AuthHeader } from "@/components/auth"
 import { useInternshipManager } from "@/hooks/useInternshipManager"
 import { useWorkLogManager } from "@/hooks/useWorkLogManager"
+import { useExport } from "@/hooks/useExport"
 import { useAuth } from "@/hooks/useAuth"
 
 export default function InternshipTracker() {
@@ -22,6 +24,7 @@ export default function InternshipTracker() {
   const { user, loading: authLoading } = useAuth()
   const internshipManager = useInternshipManager()
   const workLogManager = useWorkLogManager()
+  const exportManager = useExport()
 
   const handleWorkLogSave = () => {
     if (!internshipManager.selectedInternship) return
@@ -120,6 +123,7 @@ export default function InternshipTracker() {
         <InternshipHeader
           internship={internshipManager.selectedInternship}
           onEdit={internshipManager.openEditDialog}
+          onExport={exportManager.openExportDialog}
         />
 
         <InternshipStats internship={internshipManager.selectedInternship} />
@@ -157,6 +161,12 @@ export default function InternshipTracker() {
           onDelete={handleWorkLogDelete}
           hasExistingLog={workLogManager.hasExistingLog(internshipManager.selectedInternship)}
           error={workLogManager.error}
+        />
+
+        <ExportDialog
+          isOpen={exportManager.isExportDialogOpen}
+          onClose={exportManager.closeExportDialog}
+          internship={internshipManager.selectedInternship}
         />
       </div>
     </div>

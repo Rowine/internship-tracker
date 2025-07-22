@@ -46,7 +46,7 @@ export function AuthHeader() {
                 <h1 className="text-lg font-semibold text-primary">
                   InternTrack
                 </h1>
-                <p className="text-xs text-muted-foreground">Professional Growth</p>
+                <p className="text-xs text-muted-foreground">Document, Track, and Report</p>
               </div>
             </div>
           </div>
