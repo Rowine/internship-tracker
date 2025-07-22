@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   InternshipHeader,
   InternshipStats,
@@ -46,12 +47,18 @@ export default function InternshipTracker() {
   // Show loading spinner while checking authentication or loading internships
   if (authLoading || (user && internshipManager.loading)) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-          <p className="text-gray-600 text-sm">
-            {authLoading ? "Checking authentication..." : "Loading internships..."}
-          </p>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4 animate-fade-in">
+          <div className="relative">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary/20 border-t-primary"></div>
+            <div className="absolute inset-0 rounded-full bg-primary/5 animate-pulse"></div>
+          </div>
+          <div className="text-center">
+            <p className="text-foreground font-medium">
+              {authLoading ? "Checking authentication..." : "Loading internships..."}
+            </p>
+            <p className="text-muted-foreground text-sm mt-1">Please wait a moment</p>
+          </div>
         </div>
       </div>
     )
@@ -65,16 +72,24 @@ export default function InternshipTracker() {
   // Show error if there's an error loading internships
   if (internshipManager.error) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="text-red-600 text-lg">Error loading internships</div>
-          <div className="text-gray-600 text-sm">{internshipManager.error}</div>
-          <button
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <div className="text-center space-y-6 max-w-md animate-fade-in">
+          <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto">
+            <svg className="w-8 h-8 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold text-foreground">Something went wrong</h3>
+            <p className="text-muted-foreground text-sm">{internshipManager.error}</p>
+          </div>
+          <Button
             onClick={() => internshipManager.loadInternships()}
-            className="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-800"
+            variant="outline"
+            className="border-primary text-primary hover:bg-primary/10"
           >
             Try Again
-          </button>
+          </Button>
         </div>
       </div>
     )
@@ -99,9 +114,9 @@ export default function InternshipTracker() {
 
   // Main dashboard when internship is selected
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <AuthHeader />
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-6 py-8 animate-fade-in">
         <InternshipHeader
           internship={internshipManager.selectedInternship}
           onEdit={internshipManager.openEditDialog}

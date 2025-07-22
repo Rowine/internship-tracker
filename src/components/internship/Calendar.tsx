@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CalendarDay } from "./CalendarDay"
 import type { InternshipData } from "@/types/internship"
@@ -51,44 +51,69 @@ export function Calendar({ internship, currentDate, onDateChange, onDayClick }: 
 
   const days = getDaysInMonth(currentDate)
 
+  const goToToday = () => {
+    onDateChange(new Date())
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-slide-up">
+      {/* Calendar Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">
-          {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-        </h3>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+            <CalendarIcon className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-foreground">
+              {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+            </h3>
+            <p className="text-sm text-muted-foreground">Track your daily progress</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
-            onClick={() => navigateMonth("prev")}
-            className="w-8 h-8 p-0 hover:bg-gray-100"
+            onClick={goToToday}
+            className="text-primary border-primary/20 hover:bg-primary/5"
           >
-            <ChevronLeft className="w-4 h-4" />
+            Today
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigateMonth("next")}
-            className="w-8 h-8 p-0 hover:bg-gray-100"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigateMonth("prev")}
+              className="w-9 h-9 p-0 hover:bg-primary/10 hover:text-primary"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigateMonth("next")}
+              className="w-9 h-9 p-0 hover:bg-primary/10 hover:text-primary"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
+      {/* Calendar Container */}
+      <div className="gradient-card rounded-xl overflow-hidden shadow-card border border-border/50 hover-lift">
         {/* Calendar Header */}
-        <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50">
+        <div className="grid grid-cols-7 border-b border-border/50 bg-muted/30">
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-            <div key={day} className="p-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wide">
+            <div key={day} className="p-4 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide">
               {day}
             </div>
           ))}
         </div>
 
         {/* Calendar Body */}
-        <div className="grid grid-cols-7">
+        <div className="grid grid-cols-7 bg-card">
           {days.map((day, index) => (
             <CalendarDay
               key={index}
@@ -100,17 +125,18 @@ export function Calendar({ internship, currentDate, onDateChange, onDayClick }: 
         </div>
       </div>
 
-      <div className="flex items-center gap-6 text-xs text-gray-500">
+      {/* Legend */}
+      <div className="flex items-center justify-center gap-8 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-gray-900 rounded-sm"></div>
+          <div className="w-3 h-3 bg-primary/70 border border-primary/40 rounded-sm shadow-sm"></div>
           <span>Work logged</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 border border-gray-300 rounded-sm"></div>
+          <div className="w-3 h-3 border border-border rounded-sm bg-card"></div>
           <span>Available</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-blue-100 border border-blue-200 rounded-sm"></div>
+          <div className="w-3 h-3 bg-primary/20 border border-primary/30 rounded-sm"></div>
           <span>Today</span>
         </div>
       </div>

@@ -21,20 +21,30 @@ export function CalendarDay({ day, internship, onDayClick }: CalendarDayProps) {
     <button
       onClick={() => onDayClick(day)}
       className={`
-        h-20 p-2 border-r border-b border-gray-100 text-left hover:bg-gray-50 transition-colors
-        ${isTodayDate ? "bg-blue-50 border-blue-200" : ""}
-        ${isWorkDay ? "bg-gray-900 text-white hover:bg-gray-800" : ""}
+        calendar-day h-20 p-3 border-r border-b border-border/30 text-left relative
+        ${isTodayDate ? "calendar-day-today" : ""}
+        ${isWorkDay ? "calendar-day-work" : "hover:bg-muted/50"}
       `}
     >
       <div
-        className={`text-sm font-medium mb-1 ${isWorkDay ? "text-white" : isTodayDate ? "text-blue-600" : "text-gray-900"
+        className={`text-sm font-semibold mb-1 ${isWorkDay ? "text-foreground" :
+          isTodayDate ? "text-primary" :
+            "text-foreground"
           }`}
       >
         {day.getDate()}
       </div>
       {dayLog && (
-        <div className={`text-xs ${isWorkDay ? "text-gray-300" : "text-gray-500"}`}>
+        <div className={`text-xs font-medium ${isWorkDay ? "text-foreground/80" :
+          "text-muted-foreground"
+          }`}>
           {dayLog.hours}h
+        </div>
+      )}
+      {dayLog && (
+        <div className="absolute bottom-1 right-1">
+          <div className={`w-2 h-2 rounded-full ${isWorkDay ? "bg-primary/70" : "bg-primary/60"
+            }`} />
         </div>
       )}
     </button>

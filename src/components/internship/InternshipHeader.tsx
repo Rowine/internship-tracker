@@ -1,6 +1,7 @@
-import { Edit3, Building2 } from "lucide-react"
+import { Edit3, Building2, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { InternshipData } from "@/types/internship"
+import { formatDateDisplay } from "@/lib/utils/date"
 
 interface InternshipHeaderProps {
   internship: InternshipData
@@ -9,30 +10,37 @@ interface InternshipHeaderProps {
 
 export function InternshipHeader({ internship, onEdit }: InternshipHeaderProps) {
   return (
-    <div className="mb-12">
-      <div className="flex items-center justify-between mb-8">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-semibold text-gray-900">Internship Tracker</h1>
-          <p className="text-gray-500 text-sm">Track your progress and daily activities</p>
-        </div>
-        <Button
-          onClick={onEdit}
-          variant="ghost"
-          className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 border border-gray-200"
-        >
-          <Edit3 className="w-4 h-4 mr-2" />
-          Edit
-        </Button>
-      </div>
+    <div className="mb-8 animate-slide-up">
+      {/* Company Info Card */}
+      <div className="gradient-card rounded-2xl p-6 shadow-card hover-lift border border-border/50">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-4">
+            <div className="gradient-primary w-12 h-12 rounded-xl flex items-center justify-center shadow-glow">
+              <Building2 className="w-6 h-6 text-primary-foreground" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-foreground">{internship.company}</h2>
+              <p className="text-muted-foreground">{internship.position}</p>
+            </div>
+          </div>
 
-      {/* Company Info */}
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-          <Building2 className="w-5 h-5 text-gray-600" />
+          <Button
+            onClick={onEdit}
+            variant="outline"
+            size="sm"
+            className="border-primary/20 text-primary hover:bg-primary/10 hover:border-primary/40 transition-all duration-200"
+          >
+            <Edit3 className="w-4 h-4 mr-2" />
+            Edit Details
+          </Button>
         </div>
-        <div>
-          <h2 className="font-semibold text-gray-900">{internship.company}</h2>
-          <p className="text-sm text-gray-500">{internship.position}</p>
+
+        {/* Additional Info */}
+        <div className="flex items-center gap-6 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4" />
+            <span>{formatDateDisplay(internship.startDate)} - {formatDateDisplay(internship.endDate)}</span>
+          </div>
         </div>
       </div>
     </div>
