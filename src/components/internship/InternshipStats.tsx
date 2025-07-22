@@ -24,7 +24,7 @@ export function InternshipStats({ internship }: InternshipStatsProps) {
   useEffect(() => {
     if (!mounted) return
 
-    const targetProgress = getProgressPercentage()
+    const targetProgress = Math.min(100, (internship.completedHours / internship.totalHours) * 100)
     // Small delay for smooth animation effect
     const timer = setTimeout(() => {
       setAnimatedProgress(targetProgress)

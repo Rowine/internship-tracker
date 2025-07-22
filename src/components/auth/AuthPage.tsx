@@ -114,7 +114,7 @@ export function AuthPage({ onSuccess }: AuthPageProps) {
 
           <div className="pt-6 text-center">
             <p className="text-sm text-muted-foreground">
-              "InternTrack made it so easy to track my hours and submit comprehensive reports to my academic advisor!"
+              &ldquo;InternTrack made it so easy to track my hours and submit comprehensive reports to my academic advisor!&rdquo;
             </p>
             <p className="text-xs font-medium text-foreground mt-2">- Sarah K., Business Administration Student</p>
           </div>
@@ -249,7 +249,7 @@ export function AuthPage({ onSuccess }: AuthPageProps) {
               {!isLogin && (
                 <div className="text-xs text-muted-foreground text-center pt-4 border-t border-border/20">
                   By creating an account, you agree to our Terms of Service and Privacy Policy.
-                  We're committed to helping you track and report your internship experience effectively.
+                  We&apos;re committed to helping you track and report your internship experience effectively.
                 </div>
               )}
             </form>

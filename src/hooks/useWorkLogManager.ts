@@ -58,8 +58,6 @@ export function useWorkLogManager() {
     try {
       setError(null);
       const dateKey = formatDateKey(selectedDate);
-      const previousLog = internship.dailyLogs[dateKey];
-      const previousHours = previousLog?.hours || 0;
 
       // Update or create work log in Supabase
       await updateWorkLog(
@@ -113,8 +111,6 @@ export function useWorkLogManager() {
     try {
       setError(null);
       const dateKey = formatDateKey(selectedDate);
-      const previousLog = internship.dailyLogs[dateKey];
-      const previousHours = previousLog?.hours || 0;
 
       // Delete work log from Supabase
       await deleteWorkLog(internship.id, dateKey);

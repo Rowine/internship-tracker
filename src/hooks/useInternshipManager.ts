@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { InternshipData, EditInternshipForm } from "@/types/internship";
 import {
   getInternships,
   createInternship,
   updateInternship,
-  deleteInternship,
 } from "@/lib/supabase-api";
 import { useAuth } from "./useAuth";
 
@@ -56,18 +55,7 @@ export function useInternshipManager() {
     });
   };
 
-  // Load internships when user changes
-  useEffect(() => {
-    if (user) {
-      loadInternships();
-    } else {
-      // User logged out - clear all state immediately
-      clearState();
-      setLoading(false);
-    }
-  }, [user]);
-
-  const loadInternships = async () => {
+  const loadInternships = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -87,7 +75,18 @@ export function useInternshipManager() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedInternship]);
+
+  // Load internships when user changes
+  useEffect(() => {
+    if (user) {
+      loadInternships();
+    } else {
+      // User logged out - clear all state immediately
+      clearState();
+      setLoading(false);
+    }
+  }, [user, loadInternships]);
 
   const updateInternshipData = (updatedInternship: InternshipData) => {
     setSelectedInternship(updatedInternship);

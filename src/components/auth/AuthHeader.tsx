@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { LogOut, User, Sparkles, ChevronDown } from 'lucide-react'
+import { LogOut, Sparkles, ChevronDown } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useState, useRef, useEffect } from 'react'
 

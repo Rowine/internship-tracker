@@ -1,7 +1,7 @@
 import jsPDF from "jspdf";
 import autoTable, { RowInput } from "jspdf-autotable";
 import type { InternshipData, DailyLog } from "@/types/internship";
-import { formatDateLong, formatDateKey } from "./utils/date";
+import { formatDateLong } from "./utils/date";
 
 // PDF export options interface
 export interface ExportOptions {
@@ -236,7 +236,9 @@ export async function exportWorkLogsToPDF(
   }
 
   // Footer with page numbers
-  const pageCount = (pdf as any).internal.getNumberOfPages();
+  const pageCount = (
+    pdf as { internal: { getNumberOfPages(): number } }
+  ).internal.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
     pdf.setPage(i);
     pdf.setFontSize(8);

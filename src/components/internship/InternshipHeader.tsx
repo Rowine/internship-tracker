@@ -1,4 +1,4 @@
-import { Edit3, Building2, Calendar, Download, MapPin, User, Clock } from "lucide-react"
+import { Edit3, Building2, Calendar, Download, User, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { InternshipData } from "@/types/internship"
 import { formatDateDisplay } from "@/lib/utils/date"
